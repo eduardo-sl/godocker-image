@@ -1,2 +1,1 @@
-# godocker-image
-Lightweight and Optimize Docker Images for Go Application
+# Lightweight and Optimize Docker Images for Go Application
