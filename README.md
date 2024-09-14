@@ -32,6 +32,46 @@ To run the Scratch image:
 docker run -p 8181:8181 myapp-scratch
 ```
 
+
+## Building Multi-Platform Docker Images
+
+To build multi-platform Docker images, you can use Docker Buildx. Below are the commands to set up and use Buildx for building images for multiple platforms.
+
+1. Create and use a new builder instance:
+    ```sh
+    docker buildx create --use --name mybuilder --driver docker-container
+    ```
+
+2. Inspect the builder instance and bootstrap it:
+    ```sh
+    docker buildx inspect mybuilder --bootstrap
+    ```
+
+3. Build the image for `linux/amd64` platform using the `scratch.Dockerfile`:
+    ```sh
+    docker buildx build --platform linux/amd64 -t myapp-scratch-amd64 -f scratch.Dockerfile --load .
+    ```
+
+4. Build the image for `linux/arm64` platform using the `scratch.Dockerfile`:
+    ```sh
+    docker buildx build --platform linux/arm64 -t myapp-scratch-arm64 -f scratch.Dockerfile --load .
+    ```
+
+5. Build the image for `linux/amd64` platform using the `distroless.Dockerfile`:
+    ```sh
+    docker buildx build --platform linux/amd64 -t myapp-distroless-amd64 -f distroless.Dockerfile --load .
+    ```
+
+6. Build the image for `linux/arm64` platform using the `distroless.Dockerfile`:
+    ```sh
+    docker buildx build --platform linux/arm64 -t myapp-distroless-arm64 -f distroless.Dockerfile --load .
+    ```
+
+**Note:** If you need to push the images, you can run:
+```sh
+docker buildx build --platform linux/amd64,linux/arm64 -t myapp-scratch -f scratch.Dockerfile --push .
+```
+
 ## Additional Information
 
 - About Distroless Image: 
