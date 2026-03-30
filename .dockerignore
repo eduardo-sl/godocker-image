@@ -1,4 +1,6 @@
+.git
 .gitignore
 .env
-.png
-.md
+*.png
+*.md
+LICENSE
