@@ -1,5 +1,8 @@
 # Stage 1: Build the application
-FROM docker.io/golang:latest AS builder
+FROM docker.io/golang:1.26-bookworm AS builder
+
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
 
 ENV CGO_ENABLED=0
 
@@ -8,17 +11,19 @@ WORKDIR /app
 
 # Copy go.mod and go.sum and download dependencies
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
 
 # Copy the source code
 COPY . .
 
-# Use a cache mount for GOCACHE and build the application
+# Use cache mounts for GOCACHE and GOMODCACHE and build the application
 RUN --mount=type=cache,target=/root/.cache/go-build \
-go build -ldflags="-s -w" -o /app/myapp
+    --mount=type=cache,target=/go/pkg/mod \
+    GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -o /app/myapp
 
 # Stage 2: Create the final image
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/static-debian12
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/myapp /myapp
