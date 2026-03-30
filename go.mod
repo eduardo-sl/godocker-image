@@ -1,3 +1,3 @@
 module github.com/eduardo-sl/godocker-image
 
-go 1.23
+go 1.26
